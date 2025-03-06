@@ -1,0 +1,21 @@
+{
+  "actions": [
+    "Contrast-Security-OSS/*",
+    "act10ns/slack@44541246747a30eb3102d87f7a4cc5471b0ffb7d",
+    "actions/1f0c5cde4bc74cd7e1254d0cb4de8d49e9068c7d",
+    "actions/aws-codebuild-run-build@540238d832197229bfaab9785feb4fb8450f6396",
+    "actions/cache",
+    "actions/checkout",
+    "actions/deploy-pages",
+    "actions/download-artifact",
+    "actions/github-script",
+    "actions/labeler@8558fd74291d67161a8a78ce36a881fa63b766a9",
+    "actions/upload-artifact",
+    "actions/upload-pages-artifact",
+    "azure/setup-helm@b9e51907a09c216f16ebe8536097933489208112",
+    "docker/login-action",
+    "gradle/actions/setup-gradle",
+    "grafana/setup-k6-action",
+    "SonarSource/sonarqube-scan-action"
+  ]
+}
