@@ -1,4 +1,4 @@
-name: 'Actionbot'
+name: 'actionbot'
 description: 'Checks your repository workflows for references to actions against a defined allow/prohibit list'
 author: 'Contrast Security Inc.'
 branding:
