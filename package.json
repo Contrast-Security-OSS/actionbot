@@ -1,6 +1,6 @@
 {
   "name": "actionbot",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "Github Action Policy Checker as a Github Action",
   "main": "lib/index.js",
