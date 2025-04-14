@@ -13,7 +13,7 @@ export async function getFilesInCommit(commit: any, token: string): Promise<stri
 
     const octokit = github.getOctokit(token);
     console.log('octokit : ' + octokit);
-    const result = await octokit.repos.getCommit(args);
+    const result = await octokit.rest.repos.getCommit(args);
     console.log('result : ' + result);
 
     if (result && result.data && result.data.files) {

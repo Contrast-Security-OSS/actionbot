@@ -69,7 +69,7 @@ async function run(context: typeof github.context): Promise<void> {
         if (prNumber) {
           console.log('prNumber : ' + prNumber);
           // Fetch the pull request details to get the commits_url
-          const prDetails = await client.pulls.get({
+          const prDetails = await client.rest.pulls.get({
             owner: github.context.repo.owner,
             repo: github.context.repo.repo,
             pull_number: prNumber,
@@ -97,7 +97,7 @@ async function run(context: typeof github.context): Promise<void> {
         if (prNumber2) {
           console.log('prNumber2 : ' + prNumber2);
           // Fetch the pull request details to get the commits_url
-          const prDetails2 = await client.pulls.get({
+          const prDetails2 = await client.rest.pulls.get({
             owner: github.context.repo.owner,
             repo: github.context.repo.repo,
             pull_number: prNumber2,
