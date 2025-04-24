@@ -10,7 +10,7 @@ inputs:
     description: 'Set to either `allow` or `prohibit`. When allow is the policy, any actions not on the list will be in violation. When prohibit is the policy, any actions on the list will be in violation.'
   policy-url:
     required: true
-    description: 'The url to a publicly available json file containing a list of allowed or prohibited actions.'
+    description: 'The URL to a publicly accessible or private GitHub JSON file containing a list of allowed or prohibited actions. Private URLs require appropriate permissions or authentication.'
   fail-if-violations:
     required: false
     default: 'true'

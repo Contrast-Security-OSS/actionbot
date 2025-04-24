@@ -35,6 +35,11 @@ interface PolicyResponse {
   actions: string[];
 }
 
+function isGitHubUrl(url: string): boolean {
+  const githubPattern = /^https?:\/\/(www\.)?github\.com\/.+/;
+  return githubPattern.test(url);
+}
+
 function isPolicyResponse(obj: any): obj is PolicyResponse {
   return typeof obj === "object" && obj !== null && Array.isArray(obj.actions);
 }
@@ -151,19 +156,44 @@ async function run(context: typeof github.context): Promise<void> {
       return;
     }
 
-    // Load up the remote policy list
-    await fetch(policyUrl)
-      .then((response) => response.json() as Promise<PolicyResponse>)
-      .then((json) => {
-        // json is now correctly typed as PolicyResponse
+    if (!isGitHubUrl(policyUrl)) {
+      // Load up the remote policy list
+      await fetch(policyUrl)
+        .then((response) => response.json() as Promise<PolicyResponse>)
+        .then((json) => {
+          // json is now correctly typed as PolicyResponse
+          json.actions.forEach((as) => {
+            actionPolicyList.push(new Action(as));
+          });
+        })
+        .catch((error) => {
+          console.error("Error fetching or parsing policy:", error);
+          // Handle the error appropriately (e.g., throw an error, set a default policy)
+        });
+    } else {
+      // Load up the github policy list
+      const response = await client.rest.repos.getContent({
+        owner: github.context.repo.owner,
+        repo: github.context.repo.repo,
+        path: policyUrl
+          .replace("https://github.com/", "")
+          .split("/")
+          .slice(2)
+          .join("/"),
+      });
+
+      if (response.data && "content" in response.data) {
+        const content = Buffer.from(response.data.content, "base64").toString(
+          "utf-8",
+        );
+        const json = JSON.parse(content) as PolicyResponse;
         json.actions.forEach((as) => {
           actionPolicyList.push(new Action(as));
         });
-      })
-      .catch((error) => {
-        console.error("Error fetching or parsing policy:", error);
-        // Handle the error appropriately (e.g., throw an error, set a default policy)
-      });
+      } else {
+        throw new Error("Failed to load GitHub policy list.");
+      }
+    }
 
     console.log("\nACTION POLICY LIST");
     console.log(line);
