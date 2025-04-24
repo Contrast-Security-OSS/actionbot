@@ -35,6 +35,11 @@ interface PolicyResponse {
   actions: string[];
 }
 
+function isGitHubUrl(url: string): boolean {
+  const githubPattern = /^https?:\/\/(www\.)?github\.com\/.+/;
+  return githubPattern.test(url);
+}
+
 function isPolicyResponse(obj: any): obj is PolicyResponse {
   return typeof obj === "object" && obj !== null && Array.isArray(obj.actions);
 }
@@ -151,19 +156,25 @@ async function run(context: typeof github.context): Promise<void> {
       return;
     }
 
-    // Load up the remote policy list
-    await fetch(policyUrl)
-      .then((response) => response.json() as Promise<PolicyResponse>)
-      .then((json) => {
-        // json is now correctly typed as PolicyResponse
-        json.actions.forEach((as) => {
-          actionPolicyList.push(new Action(as));
+    if (!isGitHubUrl(policyUrl)) {
+      // Load up the remote policy list
+      await fetch(policyUrl)
+        .then((response) => response.json() as Promise<PolicyResponse>)
+        .then((json) => {
+          // json is now correctly typed as PolicyResponse
+          json.actions.forEach((as) => {
+            actionPolicyList.push(new Action(as));
+          });
+        })
+        .catch((error) => {
+          console.error("Error fetching or parsing policy:", error);
+          // Handle the error appropriately (e.g., throw an error, set a default policy)
         });
-      })
-      .catch((error) => {
-        console.error("Error fetching or parsing policy:", error);
-        // Handle the error appropriately (e.g., throw an error, set a default policy)
-      });
+      } else {
+        // Load up the github policy list
+        
+
+      }
 
     console.log("\nACTION POLICY LIST");
     console.log(line);
