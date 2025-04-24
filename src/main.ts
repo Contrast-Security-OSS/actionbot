@@ -170,25 +170,30 @@ async function run(context: typeof github.context): Promise<void> {
           console.error("Error fetching or parsing policy:", error);
           // Handle the error appropriately (e.g., throw an error, set a default policy)
         });
-      } else {
-        // Load up the github policy list
-        const response = await client.rest.repos.getContent({
-          owner: github.context.repo.owner,
-          repo: github.context.repo.repo,
-          path: policyUrl.replace("https://github.com/", "").split("/").slice(2).join("/"),
+    } else {
+      // Load up the github policy list
+      const response = await client.rest.repos.getContent({
+        owner: github.context.repo.owner,
+        repo: github.context.repo.repo,
+        path: policyUrl
+          .replace("https://github.com/", "")
+          .split("/")
+          .slice(2)
+          .join("/"),
+      });
+
+      if (response.data && "content" in response.data) {
+        const content = Buffer.from(response.data.content, "base64").toString(
+          "utf-8",
+        );
+        const json = JSON.parse(content) as PolicyResponse;
+        json.actions.forEach((as) => {
+          actionPolicyList.push(new Action(as));
         });
-
-        if (response.data && "content" in response.data) {
-          const content = Buffer.from(response.data.content, "base64").toString("utf-8");
-          const json = JSON.parse(content) as PolicyResponse;
-          json.actions.forEach((as) => {
-            actionPolicyList.push(new Action(as));
-          });
-        } else {
-          throw new Error("Failed to load GitHub policy list.");
-        }
-
+      } else {
+        throw new Error("Failed to load GitHub policy list.");
       }
+    }
 
     console.log("\nACTION POLICY LIST");
     console.log(line);
