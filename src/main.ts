@@ -171,15 +171,17 @@ async function run(context: typeof github.context): Promise<void> {
           // Handle the error appropriately (e.g., throw an error, set a default policy)
         });
     } else {
-      // Load up the github policy list
+      // Correctly extract the file path from the policyUrl
+      const filePath = policyUrl
+        .replace("https://github.com/", "")
+        .split("/")
+        .slice(4) // Start after 'blob/main'
+        .join("/");
+
       const response = await client.rest.repos.getContent({
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
-        path: policyUrl
-          .replace("https://github.com/", "")
-          .split("/")
-          .slice(2)
-          .join("/"),
+        path: filePath, // Use the corrected file path
       });
 
       if (response.data && "content" in response.data) {
