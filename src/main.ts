@@ -171,17 +171,16 @@ async function run(context: typeof github.context): Promise<void> {
           // Handle the error appropriately (e.g., throw an error, set a default policy)
         });
     } else {
-      // Correctly extract the file path from the policyUrl
-      const filePath = policyUrl
-        .replace("https://github.com/", "")
-        .split("/")
-        .slice(4) // Start after 'blob/main'
-        .join("/");
+      // Extract owner, repo, and file path from the policyUrl
+      const urlParts = policyUrl.replace("https://github.com/", "").split("/");
+      const owner = urlParts[0]; // Extract the owner
+      const repo = urlParts[1]; // Extract the repository name
+      const filePath = urlParts.slice(4).join("/"); // Extract the file path after 'blob/{branch}'
 
       const response = await client.rest.repos.getContent({
-        owner: github.context.repo.owner,
-        repo: github.context.repo.repo,
-        path: filePath, // Use the corrected file path
+        owner: owner, // Use the extracted owner
+        repo: repo, // Use the extracted repo
+        path: filePath, // Use the extracted file path
       });
 
       if (response.data && "content" in response.data) {
