@@ -202,10 +202,12 @@ async function run(context: typeof github.context): Promise<void> {
       console.log(item.toString());
     });
 
+    console.log("\nREADING WORKFLOW FILES");
     workflowFilePaths.forEach((wf) => {
+      console.log(line);
       let workflow: Workflow = { filePath: wf, actions: Array<Action>() };
       workflowFiles.push(workflow);
-
+      console.log("\nReading:" + workflow.filePath);
       try {
         let yaml: any = yamlParse.load(
           fs.readFileSync(workflow.filePath, "utf-8"),
@@ -265,13 +267,13 @@ async function run(context: typeof github.context): Promise<void> {
       if (violation.actions.length > 0) {
         actionViolations.push(violation);
       } else {
-        console.log("\nNo violations detected");
+        console.log("\n ✅ No violations detected");
       }
     });
 
     if (actionViolations.length > 0) {
       core.setOutput("violations", actionViolations);
-      console.log("\n!!! ACTION POLICY VIOLATIONS DETECTED !!!");
+      console.log("\n ❌ ACTION POLICY VIOLATIONS DETECTED ❌");
       console.log(line);
 
       actionViolations.forEach((workflow) => {
@@ -285,11 +287,11 @@ async function run(context: typeof github.context): Promise<void> {
       });
 
       if (failIfViolations) {
-        core.setFailed("!!! ACTION POLICY VIOLATIONS DETECTED !!!");
+        core.setFailed(" ❌ ACTION POLICY VIOLATIONS DETECTED ❌");
       }
     } else {
       console.log(
-        "\nAll workflow files contain actions that conform to the policy provided.",
+        "\n ✅ All workflow files contain actions that conform to the policy provided.",
       );
     }
   } catch (error: unknown) {
