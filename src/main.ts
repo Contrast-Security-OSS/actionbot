@@ -141,10 +141,12 @@ async function run(context: typeof github.context): Promise<void> {
       let filePath = path.parse(file);
 
       console.log("filePath : " + filePath);
+      const dirLower = filePath.dir.toLowerCase();
       if (
-        (filePath.ext.toLowerCase() == ".yaml" ||
+        ((filePath.ext.toLowerCase() == ".yaml" ||
           filePath.ext.toLowerCase() == ".yml") &&
-        filePath.dir.toLowerCase() == ".github/workflows"
+          dirLower.startsWith(".github/workflows")) ||
+        dirLower.startsWith(".github/actions")
       ) {
         workflowFilePaths.push(file);
       }
