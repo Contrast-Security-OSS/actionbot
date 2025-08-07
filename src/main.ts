@@ -209,7 +209,8 @@ async function run(context: typeof github.context): Promise<void> {
       console.log(line);
       let workflow: Workflow = { filePath: wf, actions: Array<Action>() };
       workflowFiles.push(workflow);
-      console.log("\nReading:" + workflow.filePath);
+      if (fs.existsSync(workflow.filePath)) {
+        console.log("\nReading:" + workflow.filePath);
       try {
         let yaml: any = yamlParse.load(
           fs.readFileSync(workflow.filePath, "utf-8"),
@@ -232,6 +233,8 @@ async function run(context: typeof github.context): Promise<void> {
         }
         console.log(error);
       }
+      }
+      
     });
 
     //iterate through all the workflow files found
