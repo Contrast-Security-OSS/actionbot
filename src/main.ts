@@ -142,6 +142,8 @@ async function run(context: typeof github.context): Promise<void> {
 
       console.log("filePath : " + filePath);
       const dirLower = filePath.dir.toLowerCase();
+      console.log("filePath.ext.toLowerCase() : " + filePath.ext.toLowerCase());
+      console.log("dirLower : " + dirLower);
       if (
         ((filePath.ext.toLowerCase() == ".yaml" ||
           filePath.ext.toLowerCase() == ".yml") &&
