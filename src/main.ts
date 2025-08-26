@@ -145,10 +145,8 @@ async function run(context: typeof github.context): Promise<void> {
       console.log("filePath.ext.toLowerCase() : " + filePath.ext.toLowerCase());
       console.log("dirLower : " + dirLower);
       if (
-        ((filePath.ext.toLowerCase() == ".yaml" ||
-          filePath.ext.toLowerCase() == ".yml") &&
-          dirLower.startsWith(".github/workflows")) ||
-        dirLower.startsWith(".github/actions")
+         (filePath.ext.toLowerCase() == ".yaml" || filePath.ext.toLowerCase() == ".yml") &&
+         (dirLower.startsWith(".github/workflows") || dirLower.startsWith(".github/actions"))
       ) {
         workflowFilePaths.push(file);
       }
@@ -280,6 +278,7 @@ async function run(context: typeof github.context): Promise<void> {
     if (actionViolations.length > 0) {
       core.setOutput("violations", actionViolations);
       console.log("\n ❌ ACTION POLICY VIOLATIONS DETECTED ❌");
+      console.log("\n At least one action does not conform to the policy provided. See above for Actionbot workflow output for details.");
       console.log(line);
 
       actionViolations.forEach((workflow) => {
