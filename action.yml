@@ -1,5 +1,5 @@
 name: 'actionbot'
-description: 'Checks your repository workflows for references to actions against a defined allow/prohibit list'
+description: 'Checks your repository workflows for references to actions against a defined allow or prohibit list'
 author: 'Contrast Security Inc.'
 branding:
   icon: check-circle
@@ -22,5 +22,5 @@ outputs:
   results:
       description: 'A list of any actions breaking the provided policy rules.'
 runs:
-  using: 'node20'
+  using: 'node24'
   main: 'lib/index.js'
