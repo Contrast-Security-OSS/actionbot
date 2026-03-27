@@ -22,5 +22,5 @@ outputs:
   results:
       description: 'A list of any actions breaking the provided policy rules.'
 runs:
-  using: 'node20'
+  using: 'node24'
   main: 'lib/index.js'
