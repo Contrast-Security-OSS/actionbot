@@ -56,7 +56,7 @@ This GitHub action allows you to enforce allow and prohit policies on the action
           - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
           - name: Test Allow Policy
-            uses: Contrast-Security-OSS/actionbot@v1.0.0
+            uses: Contrast-Security-OSS/actionbot@v1.0.8
             with:
               policy: 'allow'
               policy-url: 'https://github.com/Contrast-Security-OSS/actionbot/example_allow_policy.json' # Replace with your allow policy URL
@@ -70,7 +70,7 @@ This GitHub action allows you to enforce allow and prohit policies on the action
           - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
           - name: Test Prohibit Policy
-            uses: Contrast-Security-OSS/actionbot@v1.0.0
+            uses: Contrast-Security-OSS/actionbot@v1.0.8
             with:
               policy: 'prohibit'
               policy-url: 'https://github.com/Contrast-Security-OSS/actionbot/example_prohibit_policy.json' # Replace with your prohibit policy URL
