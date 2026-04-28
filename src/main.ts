@@ -3,8 +3,8 @@ import fs from "fs";
 import * as ghf from "./github_files";
 import path from "path";
 import yamlParse from "js-yaml";
-const github = require("@actions/github");
-const core = require("@actions/core");
+import * as github from "@actions/github";
+import * as core from "@actions/core";
 
 export class Action {
   constructor(actionString: string) {
