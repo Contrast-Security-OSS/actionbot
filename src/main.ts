@@ -63,7 +63,7 @@ async function run(context: typeof github.context): Promise<void> {
 
     //get all the modified or added files in the commits
     let allFiles = new Set<string>();
-    let commits;
+    let commits: any[] = [];
 
     switch (context.eventName) {
       case "pull_request":
