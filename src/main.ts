@@ -207,33 +207,41 @@ async function run(context: typeof github.context): Promise<void> {
     console.log("\nREADING WORKFLOW FILES");
     workflowFilePaths.forEach((wf) => {
       console.log(line);
+      // A file can be added/modified in one commit of a PR yet deleted by the
+      // head (e.g. added then removed across commits). getFilesInCommit reports
+      // it as added/modified from the earlier commit, but the checkout is the
+      // head ref, so the file is not on disk. Skip it rather than reading it,
+      // which would throw ENOENT and fail the whole run for a file that no
+      // longer exists. A workflow deleted outright cannot violate the policy.
+      if (!fs.existsSync(wf)) {
+        console.log("\nSkipping (deleted in this change set): " + wf);
+        return;
+      }
       let workflow: Workflow = { filePath: wf, actions: Array<Action>() };
       workflowFiles.push(workflow);
-      if (fs.existsSync(workflow.filePath)) {
-        console.log("\nReading:" + workflow.filePath);
-        try {
-          let yaml: any = yamlParse.load(
-            fs.readFileSync(workflow.filePath, "utf-8"),
+      console.log("\nReading:" + workflow.filePath);
+      try {
+        let yaml: any = yamlParse.load(
+          fs.readFileSync(workflow.filePath, "utf-8"),
+        );
+        let actionStrings = getPropertyValues(yaml, "uses");
+
+        actionStrings.forEach((as) => {
+          workflow.actions.push(new Action(as));
+        });
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          core.debug(error.message);
+          core.setFailed(
+            `Unable to parse workflow file '${workflow.filePath}' - please ensure it's formatted properly.`,
           );
-          let actionStrings = getPropertyValues(yaml, "uses");
-  
-          actionStrings.forEach((as) => {
-            workflow.actions.push(new Action(as));
-          });
-        } catch (error: unknown) {
-          if (error instanceof Error) {
-            core.debug(error.message);
-            core.setFailed(
-              `Unable to parse workflow file '${workflow.filePath}' - please ensure it's formatted properly.`,
-            );
-          } else {
-            // Handle cases where error is not an Error object
-            core.debug("An unknown error occurred.");
-            core.setFailed("An unknown error occurred.");
-          }
-          console.log(error);
+        } else {
+          // Handle cases where error is not an Error object
+          core.debug("An unknown error occurred.");
+          core.setFailed("An unknown error occurred.");
         }
-      } 
+        console.log(error);
+      }
     });
 
     //iterate through all the workflow files found
